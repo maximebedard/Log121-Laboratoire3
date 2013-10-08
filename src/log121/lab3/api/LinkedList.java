@@ -4,6 +4,66 @@ import java.util.NoSuchElementException;
 
 public class LinkedList<T> implements Collection<T> {
 
+	private final class IteratorImplementation implements Iterator<T> {
+		private Noeud<T> prev;
+		private Noeud<T> current;
+		private boolean ascending;
+
+		public IteratorImplementation(Noeud<T> current, boolean ascending) {
+			this.prev = null;
+			this.current = current;
+			this.ascending = ascending;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return current != null;
+		}
+
+		@Override
+		public T next() {
+			if (current == null) {
+				throw new NoSuchElementException();
+			}
+
+			prev = current;
+			if (ascending)
+				current = current.next;
+			else
+				current = current.previous;
+			return prev.elem;
+		}
+
+		@Override
+		public void remove() {
+			throw new IllegalArgumentException("Not implemented");
+		}
+	}
+
+	private final class Noeud<U> {
+		public U elem;
+
+		public Noeud<U> next;
+
+		public Noeud<U> previous;
+
+		public Noeud(U value) {
+			this(value, null, null);
+		}
+
+		public Noeud(U value, Noeud<U> next, Noeud<U> previous) {
+			this.elem = value;
+			this.next = next;
+			this.previous = previous;
+		}
+		public boolean hasNext() {
+			return next != null;
+		}
+		public boolean hasPrevious() {
+			return previous != null;
+		}
+	}
+
 	/**
 	 * Nombre d'éléments dans la file
 	 */
@@ -13,7 +73,7 @@ public class LinkedList<T> implements Collection<T> {
 	 * Noeud au début de la file
 	 */
 	private Noeud<T> debut;
-
+	
 	/**
 	 * Noeud à la fin de la file
 	 */
@@ -28,35 +88,37 @@ public class LinkedList<T> implements Collection<T> {
 	}
 
 	/**
-	 * Ajoute une forme é la fin de la file Opération en O(1)
+	 * Ajoute un élément à la suite de l'index s Opération en O(n)
 	 * 
+	 * @param index
 	 * @param elem
+	 * @throws ArrayIndexOutOfBoundsException
 	 * @throws IllegalArgumentException
 	 */
 	@Override
-	public void addLast(T elem) {
+	public void addAt(int index, T elem) {
+		if (index < 0 || index > taille)
+			throw new ArrayIndexOutOfBoundsException("index");
+
 		if (elem == null)
 			throw new IllegalArgumentException("elem");
 
-		// on ajoute le premier noeud
-		if (debut == null) {
-			debut = new Noeud<T>(elem);
-			fin = debut;
-		}
-		// on ajoute le noeud é la fin
-		else {
-			Noeud<T> a = fin;
-			fin.next = new Noeud<T>(elem, null, a);
-			fin = fin.next;
-		}
-
-		taille++;
-	}
-
-	@Override
-	public void mergeLast(Collection<T> col) {
-		for (T elem : col)
+		if (index == 0)
+			addFirst(elem);
+		else if (index == taille)
 			addLast(elem);
+		else {
+			Noeud<T> current = trouveNoeud(index);
+			Noeud<T> nouveau = new Noeud<T>(elem, current, current.previous);
+			
+			if(current.hasPrevious())
+				current.previous.next = nouveau;
+			
+			if(current.hasNext())
+				current.next.previous = nouveau;
+
+			taille++;
+		}
 	}
 
 	/**
@@ -84,40 +146,40 @@ public class LinkedList<T> implements Collection<T> {
 		taille++;
 	}
 
-	@Override
-	public void mergeFirst(Collection<T> col) {
-		for (T elem : col)
-			addFirst(elem);
-	}
-
 	/**
-	 * Ajoute un élément à la suite de l'index s Opération en O(n)
+	 * Ajoute une forme à la fin de la file Opération en O(1)
 	 * 
-	 * @param index
 	 * @param elem
-	 * @throws ArrayIndexOutOfBoundsException
 	 * @throws IllegalArgumentException
 	 */
 	@Override
-	public void addAt(int index, T elem) {
-		if (index < 0 || index > taille)
-			throw new ArrayIndexOutOfBoundsException("index");
-
+	public void addLast(T elem) {
 		if (elem == null)
 			throw new IllegalArgumentException("elem");
 
-		if (index == 0)
-			addFirst(elem);
-		else if (index == taille)
-			addLast(elem);
-		else {
-			Noeud<T> current = trouveNoeud(index);
-			Noeud<T> nouveau = new Noeud<T>(elem, current, current.previous);
-			current.previous.next = nouveau;
-			current.next.previous = nouveau;
-
-			taille++;
+		// on ajoute le premier noeud
+		if (debut == null) {
+			debut = new Noeud<T>(elem);
+			fin = debut;
 		}
+		// on ajoute le noeud é la fin
+		else {
+			Noeud<T> a = fin;
+			fin.next = new Noeud<T>(elem, null, a);
+			fin = fin.next;
+		}
+
+		taille++;
+	}
+
+	/**
+	 * Retire tous les éléments de la liste
+	 */
+	@Override
+	public void empty() {
+		for (@SuppressWarnings("unused")
+		T elem : this)
+			removeLast();
 	}
 
 	/**
@@ -134,26 +196,47 @@ public class LinkedList<T> implements Collection<T> {
 	}
 
 	/**
-	 * Trouve le noeud dans la liste chainé et le retourne
+	 * Retourne le nombre d'element dans la liste
 	 * 
-	 * @param index
-	 *            position du noeud dans la chaine
-	 * @return Noeud<T> dans la chaine
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
+	 * @return nombre de formes
 	 */
-	private Noeud<T> trouveNoeud(int index) {
-		if (index < 0 || index > taille)
-			throw new ArrayIndexOutOfBoundsException("index");
+	@Override
+	public int getSize() {
+		return taille;
+	}
 
-		Noeud<T> found = debut;
-		int i = 0;
+	/**
+	 * Retoure vrai si la liste est vide
+	 */
+	@Override
+	public boolean isEmpty() {
+		return taille == 0;
+	}
 
-		while (found.hasNext() && i++ != index) {
-			found = found.next;
-		}
+	/**
+	 * Retoune un iterateur pour parcourir les elements dans la liste
+	 */
+	@Override
+	public Iterator<T> iterator() {
+		return new IteratorImplementation(debut, true);
+	}
 
-		return found;
+	/**
+	 * Ajoute tous les éléments d'une autre liste chainée au débute de la liste actuelle
+	 */
+	@Override
+	public void mergeFirst(Collection<T> col) {
+		for (T elem : col)
+			addFirst(elem);
+	}
+
+	/**
+	 * Ajoute tous les éléments d'une autre liste chainée à la fin de la liste actuelle
+	 */
+	@Override
+	public void mergeLast(Collection<T> col) {
+		for (T elem : col)
+			addLast(elem);
 	}
 
 	/**
@@ -216,14 +299,6 @@ public class LinkedList<T> implements Collection<T> {
 	}
 
 	/**
-	 * Retoune un iterateur pour parcourir les elements dans la liste
-	 */
-	@Override
-	public Iterator<T> iterator() {
-		return new IteratorImplementation(debut, true);
-	}
-
-	/**
 	 * Retourne un iterateur pour parcourir les éléments dans la liste en sens
 	 * inverse
 	 */
@@ -233,91 +308,26 @@ public class LinkedList<T> implements Collection<T> {
 	}
 
 	/**
-	 * Retourne le nombre d'element dans la liste
+	 * Trouve le noeud dans la liste chainé et le retourne
 	 * 
-	 * @return nombre de formes
+	 * @param index
+	 *            position du noeud dans la chaine
+	 * @return Noeud<T> dans la chaine
+	 * 
+	 * @throws ArrayIndexOutOfBoundsException
 	 */
-	@Override
-	public int getSize() {
-		return taille;
-	}
+	private Noeud<T> trouveNoeud(int index) {
+		if (index < 0 || index >= taille)
+			throw new ArrayIndexOutOfBoundsException("index");
 
-	private final class IteratorImplementation implements Iterator<T> {
-		private Noeud<T> prev;
-		private Noeud<T> current;
-		private boolean ascending;
+		Noeud<T> found = debut;
+		int i = 0;
 
-		public IteratorImplementation(Noeud<T> current, boolean ascending) {
-			this.prev = null;
-			this.current = current;
-			this.ascending = ascending;
+		while (found.hasNext() && i++ != index) {
+			found = found.next;
 		}
 
-		@Override
-		public boolean hasNext() {
-			return current != null;
-		}
-
-		@Override
-		public T next() {
-			if (current == null) {
-				throw new NoSuchElementException();
-			}
-
-			prev = current;
-			if (ascending)
-				current = current.next;
-			else
-				current = current.previous;
-			return prev.elem;
-		}
-
-		@Override
-		public void remove() {
-			throw new IllegalArgumentException("Not implemented");
-		}
-	}
-
-	private final class Noeud<U> {
-		public Noeud(U value) {
-			this(value, null, null);
-		}
-
-		public Noeud(U value, Noeud<U> next, Noeud<U> previous) {
-			this.elem = value;
-			this.next = next;
-			this.previous = previous;
-		}
-
-		public boolean hasNext() {
-			return next != null;
-		}
-
-		public boolean hasPrevious() {
-			return previous != null;
-		}
-
-		public U elem;
-		public Noeud<U> next;
-		public Noeud<U> previous;
-	}
-
-	/**
-	 * Retire tous les éléments de la liste
-	 */
-	@Override
-	public void empty() {
-		for (@SuppressWarnings("unused")
-		T elem : this)
-			removeLast();
-	}
-
-	/**
-	 * Retoure vrai si la liste est vide
-	 */
-	@Override
-	public boolean isEmpty() {
-		return taille == 0;
+		return found;
 	}
 
 }
