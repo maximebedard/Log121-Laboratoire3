@@ -1,15 +1,16 @@
 package log121.lab3.api;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class LinkedList<T> implements Collection<T> {
 
-	private final class IteratorImplementation implements Iterator<T> {
-		private Noeud<T> prev;
-		private Noeud<T> current;
+	private final class LinkedListIterator implements Iterator<T> {
+		private LinkedListNode<T> prev;
+		private LinkedListNode<T> current;
 		private boolean ascending;
 
-		public IteratorImplementation(Noeud<T> current, boolean ascending) {
+		public LinkedListIterator(LinkedListNode<T> current, boolean ascending) {
 			this.prev = null;
 			this.current = current;
 			this.ascending = ascending;
@@ -40,25 +41,27 @@ public class LinkedList<T> implements Collection<T> {
 		}
 	}
 
-	private final class Noeud<U> {
+	private final class LinkedListNode<U> {
 		public U elem;
 
-		public Noeud<U> next;
+		public LinkedListNode<U> next;
 
-		public Noeud<U> previous;
+		public LinkedListNode<U> previous;
 
-		public Noeud(U value) {
+		public LinkedListNode(U value) {
 			this(value, null, null);
 		}
 
-		public Noeud(U value, Noeud<U> next, Noeud<U> previous) {
+		public LinkedListNode(U value, LinkedListNode<U> next, LinkedListNode<U> previous) {
 			this.elem = value;
 			this.next = next;
 			this.previous = previous;
 		}
+
 		public boolean hasNext() {
 			return next != null;
 		}
+
 		public boolean hasPrevious() {
 			return previous != null;
 		}
@@ -67,25 +70,35 @@ public class LinkedList<T> implements Collection<T> {
 	/**
 	 * Nombre d'éléments dans la file
 	 */
-	private int taille;
+	private int size;
 
 	/**
 	 * Noeud au début de la file
 	 */
-	private Noeud<T> debut;
-	
+	private LinkedListNode<T> start;
+
 	/**
 	 * Noeud à la fin de la file
 	 */
-	private Noeud<T> fin;
+	private LinkedListNode<T> end;
 
 	/**
 	 * Construit une liste d'éléments vide
 	 */
 	public LinkedList() {
-		debut = fin = null;
-		taille = 0;
+		start = end = null;
+		size = 0;
 	}
+	
+	/**
+	 * Construit une liste d'éléments à partir d'une autre liste
+	 */
+	public LinkedList(LinkedList<T> other) {
+		this();
+		for(T elem : other)
+			addLast(elem);
+	}
+	
 
 	/**
 	 * Ajoute un élément à la suite de l'index s Opération en O(n)
@@ -97,7 +110,7 @@ public class LinkedList<T> implements Collection<T> {
 	 */
 	@Override
 	public void addAt(int index, T elem) {
-		if (index < 0 || index > taille)
+		if (index < 0 || index > size)
 			throw new ArrayIndexOutOfBoundsException("index");
 
 		if (elem == null)
@@ -105,19 +118,19 @@ public class LinkedList<T> implements Collection<T> {
 
 		if (index == 0)
 			addFirst(elem);
-		else if (index == taille)
+		else if (index == size)
 			addLast(elem);
 		else {
-			Noeud<T> current = trouveNoeud(index);
-			Noeud<T> nouveau = new Noeud<T>(elem, current, current.previous);
-			
-			if(current.hasPrevious())
+			LinkedListNode<T> current = trouveNoeud(index);
+			LinkedListNode<T> nouveau = new LinkedListNode<T>(elem, current, current.previous);
+
+			if (current.hasPrevious())
 				current.previous.next = nouveau;
-			
-			if(current.hasNext())
+
+			if (current.hasNext())
 				current.next.previous = nouveau;
 
-			taille++;
+			size++;
 		}
 	}
 
@@ -134,16 +147,16 @@ public class LinkedList<T> implements Collection<T> {
 			throw new IllegalArgumentException("elem");
 
 		// on ajoute le premier noeud
-		if (debut == null) {
-			debut = new Noeud<T>(elem);
-			fin = debut;
+		if (start == null) {
+			start = new LinkedListNode<T>(elem);
+			end = start;
 		} else {
-			Noeud<T> temp = debut;
-			debut = new Noeud<T>(elem, temp, null);
-			temp.previous = debut;
+			LinkedListNode<T> temp = start;
+			start = new LinkedListNode<T>(elem, temp, null);
+			temp.previous = start;
 		}
 
-		taille++;
+		size++;
 	}
 
 	/**
@@ -158,18 +171,18 @@ public class LinkedList<T> implements Collection<T> {
 			throw new IllegalArgumentException("elem");
 
 		// on ajoute le premier noeud
-		if (debut == null) {
-			debut = new Noeud<T>(elem);
-			fin = debut;
+		if (start == null) {
+			start = new LinkedListNode<T>(elem);
+			end = start;
 		}
 		// on ajoute le noeud é la fin
 		else {
-			Noeud<T> a = fin;
-			fin.next = new Noeud<T>(elem, null, a);
-			fin = fin.next;
+			LinkedListNode<T> a = end;
+			end.next = new LinkedListNode<T>(elem, null, a);
+			end = end.next;
 		}
 
-		taille++;
+		size++;
 	}
 
 	/**
@@ -202,7 +215,7 @@ public class LinkedList<T> implements Collection<T> {
 	 */
 	@Override
 	public int getSize() {
-		return taille;
+		return size;
 	}
 
 	/**
@@ -210,7 +223,7 @@ public class LinkedList<T> implements Collection<T> {
 	 */
 	@Override
 	public boolean isEmpty() {
-		return taille == 0;
+		return size == 0;
 	}
 
 	/**
@@ -218,11 +231,12 @@ public class LinkedList<T> implements Collection<T> {
 	 */
 	@Override
 	public Iterator<T> iterator() {
-		return new IteratorImplementation(debut, true);
+		return new LinkedListIterator(start, true);
 	}
 
 	/**
-	 * Ajoute tous les éléments d'une autre liste chainée au débute de la liste actuelle
+	 * Ajoute tous les éléments d'une autre liste chainée au débute de la liste
+	 * actuelle
 	 */
 	@Override
 	public void mergeFirst(Collection<T> col) {
@@ -231,7 +245,8 @@ public class LinkedList<T> implements Collection<T> {
 	}
 
 	/**
-	 * Ajoute tous les éléments d'une autre liste chainée à la fin de la liste actuelle
+	 * Ajoute tous les éléments d'une autre liste chainée à la fin de la liste
+	 * actuelle
 	 */
 	@Override
 	public void mergeLast(Collection<T> col) {
@@ -246,19 +261,20 @@ public class LinkedList<T> implements Collection<T> {
 	 *             si la file est vide
 	 */
 	@Override
-	public void removeAt(int index) {
-		if (index < 0 || index > taille)
+	public T removeAt(int index) {
+		if (index < 0 || index > size)
 			throw new ArrayIndexOutOfBoundsException("index");
 
 		if (index == 0)
-			removeFirst();
-		else if (index == taille)
-			removeLast();
+			return removeFirst();
+		else if (index == size)
+			return removeLast();
 		else {
-			Noeud<T> supprimer = trouveNoeud(index);
+			LinkedListNode<T> supprimer = trouveNoeud(index);
 			supprimer.previous.next = supprimer.next;
 			supprimer.next.previous = supprimer.previous;
-			taille--;
+			size--;
+			return supprimer.elem == null ? null : supprimer.elem;
 		}
 	}
 
@@ -266,36 +282,38 @@ public class LinkedList<T> implements Collection<T> {
 	 * Retire un element au debut de la liste
 	 */
 	@Override
-	public void removeFirst() {
-		// la pile est vide
-		if (debut == null)
+	public T removeFirst() {
+		if (start == null)
 			throw new NoSuchElementException();
 
-		// on deplace le noeud du debut s'il y a plus d'un element
-		if (debut.hasNext()) {
-			debut = debut.next;
+		LinkedListNode<T> node = start;
+		if (start.hasNext()) {
+			start = start.next;
 		} else {
-			debut = null;
-			fin = null;
+			start = null;
+			end = null;
 		}
-		taille--;
+		size--;
+		return node == null ? null : node.elem;
 	}
 
 	/**
 	 * Retire un element a la fin de la liste
 	 */
 	@Override
-	public void removeLast() {
-		if (fin == null)
+	public T removeLast() {
+		if (end == null)
 			throw new NoSuchElementException();
 
-		if (fin.hasPrevious()) {
-			fin = fin.previous;
+		LinkedListNode<T> node = end;
+		if (end.hasPrevious()) {
+			end = end.previous;
 		} else {
-			fin = null;
-			debut = null;
+			end = null;
+			start = null;
 		}
-		taille--;
+		size--;
+		return node == null ? null : node.elem;
 	}
 
 	/**
@@ -304,7 +322,7 @@ public class LinkedList<T> implements Collection<T> {
 	 */
 	@Override
 	public Iterator<T> reverseIterator() {
-		return new IteratorImplementation(fin, false);
+		return new LinkedListIterator(end, false);
 	}
 
 	/**
@@ -316,11 +334,11 @@ public class LinkedList<T> implements Collection<T> {
 	 * 
 	 * @throws ArrayIndexOutOfBoundsException
 	 */
-	private Noeud<T> trouveNoeud(int index) {
-		if (index < 0 || index >= taille)
+	private LinkedListNode<T> trouveNoeud(int index) {
+		if (index < 0 || index >= size)
 			throw new ArrayIndexOutOfBoundsException("index");
 
-		Noeud<T> found = debut;
+		LinkedListNode<T> found = start;
 		int i = 0;
 
 		while (found.hasNext() && i++ != index) {

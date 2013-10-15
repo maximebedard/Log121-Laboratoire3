@@ -13,10 +13,9 @@ public interface Collection<T> extends Iterable<T> {
 	
 	void addAt(int index, T element);
 	
-	void removeFirst();	
-	void removeLast();
-	
-	void removeAt(int index);
+	T removeFirst();	
+	T removeLast();
+	T removeAt(int index);
 	
 	void empty();
 	
