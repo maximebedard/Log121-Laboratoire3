@@ -52,7 +52,8 @@ public class LinkedList<T> implements Collection<T> {
 			this(value, null, null);
 		}
 
-		public LinkedListNode(U value, LinkedListNode<U> next, LinkedListNode<U> previous) {
+		public LinkedListNode(U value, LinkedListNode<U> next,
+				LinkedListNode<U> previous) {
 			this.elem = value;
 			this.next = next;
 			this.previous = previous;
@@ -89,16 +90,15 @@ public class LinkedList<T> implements Collection<T> {
 		start = end = null;
 		size = 0;
 	}
-	
+
 	/**
 	 * Construit une liste d'éléments à partir d'une autre liste
 	 */
 	public LinkedList(LinkedList<T> other) {
 		this();
-		for(T elem : other)
+		for (T elem : other)
 			addLast(elem);
 	}
-	
 
 	/**
 	 * Ajoute un élément à la suite de l'index s Opération en O(n)
@@ -122,7 +122,8 @@ public class LinkedList<T> implements Collection<T> {
 			addLast(elem);
 		else {
 			LinkedListNode<T> current = trouveNoeud(index);
-			LinkedListNode<T> nouveau = new LinkedListNode<T>(elem, current, current.previous);
+			LinkedListNode<T> nouveau = new LinkedListNode<T>(elem, current,
+					current.previous);
 
 			if (current.hasPrevious())
 				current.previous.next = nouveau;
@@ -189,7 +190,7 @@ public class LinkedList<T> implements Collection<T> {
 	 * Retire tous les éléments de la liste
 	 */
 	@Override
-	public void empty() {
+	public void clear() {
 		for (@SuppressWarnings("unused")
 		T elem : this)
 			removeLast();
@@ -214,7 +215,7 @@ public class LinkedList<T> implements Collection<T> {
 	 * @return nombre de formes
 	 */
 	@Override
-	public int getSize() {
+	public int size() {
 		return size;
 	}
 
@@ -274,7 +275,7 @@ public class LinkedList<T> implements Collection<T> {
 			supprimer.previous.next = supprimer.next;
 			supprimer.next.previous = supprimer.previous;
 			size--;
-			return supprimer.elem == null ? null : supprimer.elem;
+			return supprimer.elem;
 		}
 	}
 
@@ -294,7 +295,7 @@ public class LinkedList<T> implements Collection<T> {
 			end = null;
 		}
 		size--;
-		return node == null ? null : node.elem;
+		return node.elem;
 	}
 
 	/**
@@ -313,7 +314,7 @@ public class LinkedList<T> implements Collection<T> {
 			start = null;
 		}
 		size--;
-		return node == null ? null : node.elem;
+		return node.elem;
 	}
 
 	/**
@@ -346,6 +347,30 @@ public class LinkedList<T> implements Collection<T> {
 		}
 
 		return found;
+	}
+
+	@Override
+	public T first() {
+		if (start == null)
+			throw new NoSuchElementException();
+		return start.elem;
+	}
+
+	@Override
+	public T last() {
+		if (end == null)
+			throw new NoSuchElementException();
+		return end.elem;
+	}
+
+	@Override
+	public Collection<T> matches(Predicate<T> predicat) {
+		LinkedList<T> matched = new LinkedList<T>();
+		for (T elem : this)
+			if (predicat.compare(elem))
+				matched.addLast(elem);
+
+		return matched;
 	}
 
 }

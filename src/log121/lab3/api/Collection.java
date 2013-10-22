@@ -17,13 +17,17 @@ public interface Collection<T> extends Iterable<T> {
 	T removeLast();
 	T removeAt(int index);
 	
-	void empty();
+	void clear();
 	
 	boolean isEmpty();
 	
-	int getSize();
+	int size();
 	
 	T findAt(int index);
+	T first();
+	T last();
+	
+	Collection<T> matches(Predicate<T> predicat);
 	
 	Iterator<T> reverseIterator();
 	
