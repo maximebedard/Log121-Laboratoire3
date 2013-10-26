@@ -1,5 +1,5 @@
 package log121.lab3.api;
 
-public class PlayerCollection extends LinkedList<Player> {
+public class PlayerCollection extends Liste<Player> {
 
 }

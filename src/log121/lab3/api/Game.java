@@ -14,11 +14,16 @@ public class Game {
 	 * Instance de la liste de tous les dés
 	 */
 	private DiceCollection dices = new DiceCollection();
+	
+	/**
+	 * Instance du joueur à qui est le tour
+	 */
+	private Player currentPlayer = null;
 
 	/**
 	 * Stragégie pour évaluer le score
 	 */
-	private GameStrategy strategy;
+	private final GameStrategy strategy;
 
 	/**
 	 * Usine qui permet de construire toutes les composantes du jeu
@@ -34,15 +39,31 @@ public class Game {
 	 * Tour actuel
 	 */
 	private int currentTurn = CURRENT_TURN_DEFAULT;
+	
+	public Game(int nbTurns, GameStrategy strategy){
+		if(nbTurns < 0 || strategy == null)  
+			throw new IllegalArgumentException();
+		
+		this.nbTurns = nbTurns;
+		this.strategy = strategy;
+	}
+	
 
 	/**
 	 * Évalue le score pour le tour actuel et débute le prochain tour
 	 */
 	public void evaluateTurnScore() {
-		if (strategy == null)
-			throw new NullPointerException();
-
-		strategy.evaluateTurnScore(this);
+		
+		for(Player p : players){
+			currentPlayer = p;
+			p.setHasHand(true);
+			while(p.hasHand())
+			{
+				for(Dice dice : dices)
+					dice.roll();
+				strategy.evaluateTurnScore(this);
+			}
+		}
 		currentTurn++;
 	}
 
@@ -50,8 +71,8 @@ public class Game {
 	 * Évalue le gagnant de la partie
 	 */
 	public void evaluateWinner() {
-		if (strategy == null)
-			throw new NullPointerException();
+		while(currentTurn < nbTurns) 
+			evaluateTurnScore();
 		strategy.evaluateWinner(this);
 	}
 
@@ -113,15 +134,6 @@ public class Game {
 	public void setNbTurns(int nbTurns) {
 		this.nbTurns = nbTurns;
 	}
-
-	/**
-	 * Assigne la stratégie pour évaluer le score à la partie
-	 * 
-	 * @param strategy
-	 */
-	public void setStrategy(GameStrategy strategy) {
-		this.strategy = strategy;
-	}
 	
 	/**
 	 * Retourne le numéro du tour actuel
@@ -131,5 +143,10 @@ public class Game {
 	public int getCurrentTurn() {
 		return currentTurn;
 	}
-
+	
+	public Player getCurrentPlayer(){
+		return currentPlayer == null ? players.premier() : currentPlayer;
+	}
+	
+	
 }

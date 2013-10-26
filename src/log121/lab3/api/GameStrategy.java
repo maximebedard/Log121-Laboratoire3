@@ -4,6 +4,6 @@ public interface GameStrategy {
 
 	public void evaluateTurnScore(Game game);
 	
-	public Collection<Player> evaluateWinner(Game game);
+	public Ensemble<Player> evaluateWinner(Game game);
 	
 }

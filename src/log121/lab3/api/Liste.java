@@ -3,14 +3,14 @@ package log121.lab3.api;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class LinkedList<T> implements Collection<T> {
+public class Liste<T> implements Ensemble<T> {
 
-	private final class LinkedListIterator implements Iterator<T> {
-		private LinkedListNode<T> prev;
-		private LinkedListNode<T> current;
+	private final class ListeIterateur implements Iterator<T> {
+		private ListeNoeud<T> prev;
+		private ListeNoeud<T> current;
 		private boolean ascending;
 
-		public LinkedListIterator(LinkedListNode<T> current, boolean ascending) {
+		public ListeIterateur(ListeNoeud<T> current, boolean ascending) {
 			this.prev = null;
 			this.current = current;
 			this.ascending = ascending;
@@ -41,19 +41,19 @@ public class LinkedList<T> implements Collection<T> {
 		}
 	}
 
-	private final class LinkedListNode<U> {
+	private final class ListeNoeud<U> {
 		public U elem;
 
-		public LinkedListNode<U> next;
+		public ListeNoeud<U> next;
 
-		public LinkedListNode<U> previous;
+		public ListeNoeud<U> previous;
 
-		public LinkedListNode(U value) {
+		public ListeNoeud(U value) {
 			this(value, null, null);
 		}
 
-		public LinkedListNode(U value, LinkedListNode<U> next,
-				LinkedListNode<U> previous) {
+		public ListeNoeud(U value, ListeNoeud<U> next,
+				ListeNoeud<U> previous) {
 			this.elem = value;
 			this.next = next;
 			this.previous = previous;
@@ -76,17 +76,17 @@ public class LinkedList<T> implements Collection<T> {
 	/**
 	 * Noeud au début de la file
 	 */
-	private LinkedListNode<T> start;
+	private ListeNoeud<T> start;
 
 	/**
 	 * Noeud à la fin de la file
 	 */
-	private LinkedListNode<T> end;
+	private ListeNoeud<T> end;
 
 	/**
 	 * Construit une liste d'éléments vide
 	 */
-	public LinkedList() {
+	public Liste() {
 		start = end = null;
 		size = 0;
 	}
@@ -94,10 +94,10 @@ public class LinkedList<T> implements Collection<T> {
 	/**
 	 * Construit une liste d'éléments à partir d'une autre liste
 	 */
-	public LinkedList(LinkedList<T> other) {
+	public Liste(Liste<T> other) {
 		this();
 		for (T elem : other)
-			addLast(elem);
+			ajouterFin(elem);
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class LinkedList<T> implements Collection<T> {
 	 * @throws IllegalArgumentException
 	 */
 	@Override
-	public void addAt(int index, T elem) {
+	public void ajouter(int index, T elem) {
 		if (index < 0 || index > size)
 			throw new ArrayIndexOutOfBoundsException("index");
 
@@ -117,12 +117,12 @@ public class LinkedList<T> implements Collection<T> {
 			throw new IllegalArgumentException("elem");
 
 		if (index == 0)
-			addFirst(elem);
+			ajouterDebut(elem);
 		else if (index == size)
-			addLast(elem);
+			ajouterFin(elem);
 		else {
-			LinkedListNode<T> current = trouveNoeud(index);
-			LinkedListNode<T> nouveau = new LinkedListNode<T>(elem, current,
+			ListeNoeud<T> current = trouveNoeud(index);
+			ListeNoeud<T> nouveau = new ListeNoeud<T>(elem, current,
 					current.previous);
 
 			if (current.hasPrevious())
@@ -143,17 +143,17 @@ public class LinkedList<T> implements Collection<T> {
 	 * @throws IllegalArgumentException
 	 */
 	@Override
-	public void addFirst(T elem) {
+	public void ajouterDebut(T elem) {
 		if (elem == null)
 			throw new IllegalArgumentException("elem");
 
 		// on ajoute le premier noeud
 		if (start == null) {
-			start = new LinkedListNode<T>(elem);
+			start = new ListeNoeud<T>(elem);
 			end = start;
 		} else {
-			LinkedListNode<T> temp = start;
-			start = new LinkedListNode<T>(elem, temp, null);
+			ListeNoeud<T> temp = start;
+			start = new ListeNoeud<T>(elem, temp, null);
 			temp.previous = start;
 		}
 
@@ -167,19 +167,19 @@ public class LinkedList<T> implements Collection<T> {
 	 * @throws IllegalArgumentException
 	 */
 	@Override
-	public void addLast(T elem) {
+	public void ajouterFin(T elem) {
 		if (elem == null)
 			throw new IllegalArgumentException("elem");
 
 		// on ajoute le premier noeud
 		if (start == null) {
-			start = new LinkedListNode<T>(elem);
+			start = new ListeNoeud<T>(elem);
 			end = start;
 		}
 		// on ajoute le noeud é la fin
 		else {
-			LinkedListNode<T> a = end;
-			end.next = new LinkedListNode<T>(elem, null, a);
+			ListeNoeud<T> a = end;
+			end.next = new ListeNoeud<T>(elem, null, a);
 			end = end.next;
 		}
 
@@ -190,10 +190,10 @@ public class LinkedList<T> implements Collection<T> {
 	 * Retire tous les éléments de la liste
 	 */
 	@Override
-	public void clear() {
+	public void vider() {
 		for (@SuppressWarnings("unused")
 		T elem : this)
-			removeLast();
+			enleverFin();
 	}
 
 	/**
@@ -205,7 +205,7 @@ public class LinkedList<T> implements Collection<T> {
 	 * @throws ArrayIndexOutOfBoundsException
 	 */
 	@Override
-	public T findAt(int index) {
+	public T trouver(int index) {
 		return trouveNoeud(index).elem;
 	}
 
@@ -215,7 +215,7 @@ public class LinkedList<T> implements Collection<T> {
 	 * @return nombre de formes
 	 */
 	@Override
-	public int size() {
+	public int taille() {
 		return size;
 	}
 
@@ -223,7 +223,7 @@ public class LinkedList<T> implements Collection<T> {
 	 * Retoure vrai si la liste est vide
 	 */
 	@Override
-	public boolean isEmpty() {
+	public boolean estVide() {
 		return size == 0;
 	}
 
@@ -232,7 +232,7 @@ public class LinkedList<T> implements Collection<T> {
 	 */
 	@Override
 	public Iterator<T> iterator() {
-		return new LinkedListIterator(start, true);
+		return new ListeIterateur(start, true);
 	}
 
 	/**
@@ -240,9 +240,9 @@ public class LinkedList<T> implements Collection<T> {
 	 * actuelle
 	 */
 	@Override
-	public void mergeFirst(Collection<T> col) {
+	public void fusionnerDebut(Ensemble<T> col) {
 		for (T elem : col)
-			addFirst(elem);
+			ajouterDebut(elem);
 	}
 
 	/**
@@ -250,9 +250,9 @@ public class LinkedList<T> implements Collection<T> {
 	 * actuelle
 	 */
 	@Override
-	public void mergeLast(Collection<T> col) {
+	public void fusionnerFin(Ensemble<T> col) {
 		for (T elem : col)
-			addLast(elem);
+			ajouterFin(elem);
 	}
 
 	/**
@@ -262,16 +262,16 @@ public class LinkedList<T> implements Collection<T> {
 	 *             si la file est vide
 	 */
 	@Override
-	public T removeAt(int index) {
+	public T enlever(int index) {
 		if (index < 0 || index > size)
 			throw new ArrayIndexOutOfBoundsException("index");
 
 		if (index == 0)
-			return removeFirst();
+			return enleverDebut();
 		else if (index == size)
-			return removeLast();
+			return enleverFin();
 		else {
-			LinkedListNode<T> supprimer = trouveNoeud(index);
+			ListeNoeud<T> supprimer = trouveNoeud(index);
 			supprimer.previous.next = supprimer.next;
 			supprimer.next.previous = supprimer.previous;
 			size--;
@@ -283,11 +283,11 @@ public class LinkedList<T> implements Collection<T> {
 	 * Retire un element au debut de la liste
 	 */
 	@Override
-	public T removeFirst() {
+	public T enleverDebut() {
 		if (start == null)
 			throw new NoSuchElementException();
 
-		LinkedListNode<T> node = start;
+		ListeNoeud<T> node = start;
 		if (start.hasNext()) {
 			start = start.next;
 		} else {
@@ -302,11 +302,11 @@ public class LinkedList<T> implements Collection<T> {
 	 * Retire un element a la fin de la liste
 	 */
 	@Override
-	public T removeLast() {
+	public T enleverFin() {
 		if (end == null)
 			throw new NoSuchElementException();
 
-		LinkedListNode<T> node = end;
+		ListeNoeud<T> node = end;
 		if (end.hasPrevious()) {
 			end = end.previous;
 		} else {
@@ -323,7 +323,7 @@ public class LinkedList<T> implements Collection<T> {
 	 */
 	@Override
 	public Iterator<T> reverseIterator() {
-		return new LinkedListIterator(end, false);
+		return new ListeIterateur(end, false);
 	}
 
 	/**
@@ -335,11 +335,11 @@ public class LinkedList<T> implements Collection<T> {
 	 * 
 	 * @throws ArrayIndexOutOfBoundsException
 	 */
-	private LinkedListNode<T> trouveNoeud(int index) {
+	private ListeNoeud<T> trouveNoeud(int index) {
 		if (index < 0 || index >= size)
 			throw new ArrayIndexOutOfBoundsException("index");
 
-		LinkedListNode<T> found = start;
+		ListeNoeud<T> found = start;
 		int i = 0;
 
 		while (found.hasNext() && i++ != index) {
@@ -350,25 +350,25 @@ public class LinkedList<T> implements Collection<T> {
 	}
 
 	@Override
-	public T first() {
+	public T premier() {
 		if (start == null)
 			throw new NoSuchElementException();
 		return start.elem;
 	}
 
 	@Override
-	public T last() {
+	public T dernier() {
 		if (end == null)
 			throw new NoSuchElementException();
 		return end.elem;
 	}
 
 	@Override
-	public Collection<T> matches(Predicate<T> predicat) {
-		LinkedList<T> matched = new LinkedList<T>();
+	public Ensemble<T> matches(Predicate<T> predicat) {
+		Liste<T> matched = new Liste<T>();
 		for (T elem : this)
 			if (predicat.compare(elem))
-				matched.addLast(elem);
+				matched.ajouterFin(elem);
 
 		return matched;
 	}

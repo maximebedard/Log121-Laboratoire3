@@ -2,14 +2,14 @@ package log121.lab3.api;
 
 import java.util.Comparator;
 
-public class Collections {
+public class Ensembles {
 
 	/**
 	 * Retourne l'inverse d'un comparateur (utilisé pour trier en ordre déscendant)
 	 * @param comp comparateur à inverser
 	 * @return comparateur inverse
 	 */
-	public static <T> Comparator<T> reverseOrder(final Comparator<T> comp) {
+	public static <T> Comparator<T> ordreInverse(final Comparator<T> comp) {
 		return new Comparator<T>() {
 			@Override
 			public int compare(T o1, T o2) {
@@ -26,8 +26,8 @@ public class Collections {
 	 * @param col
 	 * @return Nouvelle collection trié
 	 */
-	public static <T extends Comparable<? super T>> Collection<T> quicksort(
-			final Collection<T> col) {
+	public static <T extends Comparable<? super T>> Ensemble<T> quicksort(
+			final Ensemble<T> col) {
 		return quicksort(col, new Comparator<T>() {
 			@Override
 			public int compare(T o1, T o2) {
@@ -49,36 +49,36 @@ public class Collections {
 	 * @param comp comprarateur utilisé pour effectuer la comparaison
 	 * @return Nouvelle collection trié
 	 */
-	public static <T> Collection<T> quicksort(final Collection<T> col,
+	public static <T> Ensemble<T> quicksort(final Ensemble<T> col,
 			Comparator<? super T> comp) {
 
 		if (comp == null)
 			return col;
 
-		if (col.size() <= 1)
+		if (col.taille() <= 1)
 			return col;
 
-		T pivot = col.first();
+		T pivot = col.premier();
 
-		Collection<T> less, more, even;
-		less = new LinkedList<T>();
-		more = new LinkedList<T>();
-		even = new LinkedList<T>();
+		Ensemble<T> less, more, even;
+		less = new Liste<T>();
+		more = new Liste<T>();
+		even = new Liste<T>();
 
 		for (T elem : col) {
 			if (comp.compare(elem, pivot) < 0)
-				less.addLast(elem);
+				less.ajouterFin(elem);
 			else if (comp.compare(elem, pivot) > 0)
-				more.addLast(elem);
+				more.ajouterFin(elem);
 			else
-				even.addLast(elem);
+				even.ajouterFin(elem);
 		}
 
 		less = quicksort(less, comp);
 		more = quicksort(more, comp);
 
-		less.mergeLast(even);
-		less.mergeLast(more);
+		less.fusionnerFin(even);
+		less.fusionnerFin(more);
 
 		return less;
 

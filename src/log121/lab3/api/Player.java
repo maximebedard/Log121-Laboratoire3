@@ -3,6 +3,7 @@ package log121.lab3.api;
 public class Player implements Comparable<Player> {
 
 	private String name;
+	private boolean hasHand = false;
 
 	private static final int SCORE_DEFAULT = 0;
 	private int score = SCORE_DEFAULT;
@@ -27,9 +28,17 @@ public class Player implements Comparable<Player> {
 	public void setScore(int score) {
 		this.score = score;
 	}
-	
-	public void increaseScore(int value){
+
+	public void increaseScore(int value) {
 		score += value;
+	}
+
+	public boolean hasHand() {
+		return hasHand;
+	}
+
+	public void setHasHand(boolean hasHand) {
+		this.hasHand = hasHand;
 	}
 
 }
