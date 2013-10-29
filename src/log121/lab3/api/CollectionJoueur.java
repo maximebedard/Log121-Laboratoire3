@@ -5,12 +5,12 @@ import java.util.Iterator;
 public class CollectionJoueur extends Liste<Joueur> {
 
 	
-	private void ajouterJoueur(Joueur p)
+	public void ajouterJoueur(Joueur p)
 	{
 		this.ajouterFin(p);
 	}
 	
-	private Iterator<Joueur> creerIterateur(){
+	public Iterator<Joueur> creerIterateur(){
 		return this.iterator();
 	}
 	

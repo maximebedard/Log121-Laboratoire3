@@ -4,12 +4,12 @@ import java.util.Iterator;
 
 public class CollectionDes extends Liste<De> {
 	
-	private void ajouterJoueur(De p)
+	public void ajouterJoueur(De p)
 	{
 		this.ajouterFin(p);
 	}
 	
-	private Iterator<De> creerIterateur(){
+	public Iterator<De> creerIterateur(){
 		return this.iterator();
 	}
 	
