@@ -1,6 +1,6 @@
 package log121.lab3.api;
 
-public class Player implements Comparable<Player> {
+public class Joueur implements Comparable<Joueur> {
 
 	private String name;
 	private boolean hasHand = false;
@@ -8,12 +8,12 @@ public class Player implements Comparable<Player> {
 	private static final int SCORE_DEFAULT = 0;
 	private int score = SCORE_DEFAULT;
 
-	public Player(String name) {
+	public Joueur(String name) {
 		this.name = name;
 	}
 
 	@Override
-	public int compareTo(Player o) {
+	public int compareTo(Joueur o) {
 		return Integer.compare(this.score, o.score);
 	}
 

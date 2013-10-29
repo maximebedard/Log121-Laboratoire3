@@ -363,14 +363,4 @@ public class Liste<T> implements Ensemble<T> {
 		return end.elem;
 	}
 
-	@Override
-	public Ensemble<T> matches(Predicate<T> predicat) {
-		Liste<T> matched = new Liste<T>();
-		for (T elem : this)
-			if (predicat.compare(elem))
-				matched.ajouterFin(elem);
-
-		return matched;
-	}
-
 }

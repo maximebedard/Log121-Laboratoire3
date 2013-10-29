@@ -5,9 +5,8 @@ import static org.junit.Assert.*;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import log121.lab3.api.Ensemble;
 import log121.lab3.api.Liste;
-import log121.lab3.api.Predicate;
+
 
 import org.junit.Before;
 import org.junit.Test;
@@ -277,30 +276,6 @@ public class ListeTest {
 	@Test(expected = NoSuchElementException.class)
 	public void dernierEmptyTest() {
 		list.dernier();
-	}
-
-	@Test
-	public void matchesEmptyTest(){
-		remplirListe();
-		Ensemble<Integer> noMatches = list.matches(new Predicate<Integer>() {	
-			@Override
-			public boolean compare(Integer elem) {
-				return Integer.compare(elem, 5) == 0;
-			}
-		});
-		
-		assertEquals(0, noMatches.taille());
-		
-		
-		Ensemble<Integer> hasMatches = list.matches(new Predicate<Integer>() {
-			@Override
-			public boolean compare(Integer elem) {
-				return Integer.compare(elem, 2) == 0;
-			}
-		});
-		
-		assertEquals(1, hasMatches.taille());
-		assertEquals(2, (int)hasMatches.premier());
 	}
 	
 }

@@ -27,8 +27,7 @@ public interface Ensemble<T> extends Iterable<T> {
 	T premier();
 	T dernier();
 	
-	Ensemble<T> matches(Predicate<T> predicat);
-	
+
 	Iterator<T> reverseIterator();
 	
 }

@@ -1,6 +1,6 @@
 package log121.lab3.api;
 
-public class Dice implements Comparable<Dice> {
+public class De implements Comparable<De> {
 
 	private static final int MAX_VALUE = 6;
 	private static final int MIN_VALUE = 1;
@@ -20,7 +20,7 @@ public class Dice implements Comparable<Dice> {
 	 * 
 	 * @param size
 	 */
-	public Dice(int size) {
+	public De(int size) {
 		this.size = size;
 		roll();
 	}
@@ -28,7 +28,7 @@ public class Dice implements Comparable<Dice> {
 	/**
 	 * Create a new 6 faced dice
 	 */
-	public Dice() {
+	public De() {
 		this(MAX_VALUE);
 	}
 
@@ -64,7 +64,7 @@ public class Dice implements Comparable<Dice> {
 	 * Compare two dice values
 	 */
 	@Override
-	public int compareTo(Dice other) {
+	public int compareTo(De other) {
 		
 		if(other == null)
 			throw new IllegalArgumentException();
