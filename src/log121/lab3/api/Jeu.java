@@ -2,7 +2,7 @@ package log121.lab3.api;
 
 import java.util.Iterator;
 
-public class Partie {
+public class Jeu {
 	
 	private final int DEBUT_TOUR_COURANT = 0;
 	
@@ -13,7 +13,7 @@ public class Partie {
 	private Iterator<Joueur> iteratorJoueur;
 	private IStrategie strategie;
 	
-	public Partie(int _nombreTours, IStrategie strategie){
+	public Jeu(int _nombreTours, IStrategie strategie){
 		this.nombreTours = _nombreTours;
 		this.strategie = strategie;
 	}	
@@ -47,8 +47,12 @@ public class Partie {
 	}
 	
 	
-	public void roulerDes(){
-		
+	public void roulerDes(){		
+		for(De de : listeDes)
+		{
+			de.roll();
+			listeDes.ajouterFin(de);
+		}
 	}
 	
 	public void calculerScoreTour(){
