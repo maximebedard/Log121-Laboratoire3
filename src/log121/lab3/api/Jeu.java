@@ -14,6 +14,11 @@ public class Jeu {
 	private IStrategie strategie;
 	
 	public Jeu(int _nombreTours, IStrategie strategie){
+		if(strategie == null)
+			throw new NullPointerException("La strategie est null");
+		if(_nombreTours < 1)
+			throw new NullPointerException("Nombre de tours inferieur a 0");
+		
 		this.nombreTours = _nombreTours;
 		this.strategie = strategie;
 	}	
@@ -46,21 +51,12 @@ public class Jeu {
 		return this.tourCourant;
 	}
 	
-	
-	public void roulerDes(){		
-		for(De de : listeDes)
-		{
-			de.roll();
-			listeDes.ajouterFin(de);
-		}
-	}
-	
-	public void calculerScoreTour(){
-
+	public void calculerScoreTour(){		
+		strategie.calculerLeScore(this);
 	}
 	
 	public void calculerLeVainqueur(){
-		
+		strategie.calculerLeVainqueur(this);
 	}
 
 }
