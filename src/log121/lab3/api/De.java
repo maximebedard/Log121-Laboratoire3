@@ -52,28 +52,29 @@ public class De implements Comparable<De> {
 	}
 
 	/**
-	 * Set the current dice value
-	 * 
-	 * @param value
-	 */
-	public void setValue(int value) {
-		this.value = value;
-	}
-
-	/**
 	 * Compare two dice values
 	 */
 	@Override
 	public int compareTo(De other) {
-		
-		if(other == null)
+
+		if (other == null)
 			throw new IllegalArgumentException();
 
-		if(other.value > value)
+		if (other.value > value)
 			return 1;
-		else if(other.value < value)
+		else if (other.value < value)
 			return -1;
 		return 0;
+	}
+
+
+	/**
+	 * Set the current dice value
+	 * 
+	 * @param value
+	 */
+	public void setFaceObtenue(int value) {
+		this.value = value;	
 	}
 
 }

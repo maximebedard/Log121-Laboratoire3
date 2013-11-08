@@ -349,13 +349,21 @@ public class Liste<T> implements Ensemble<T> {
 		return found;
 	}
 
+	/**
+	 * Retourne le premier élément de la liste
+	 * @return premier élément
+	 */
 	@Override
 	public T premier() {
 		if (start == null)
 			throw new NoSuchElementException();
 		return start.elem;
 	}
-
+	
+	/**
+	 * Retourne le dernier élement de la liste
+	 * @return dernier élément
+	 */
 	@Override
 	public T dernier() {
 		if (end == null)
