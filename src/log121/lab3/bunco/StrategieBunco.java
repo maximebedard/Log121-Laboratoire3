@@ -58,7 +58,9 @@ public class StrategieBunco implements IStrategie{
 			changerTour = true;
 
 		
-		while (iteratorJoueur.hasNext()) {
+		//Partie a modifier, car il faut verifier ou est rendu l'iterateur
+		//et non quel jour possede la main (hasHand)
+		/*while (iteratorJoueur.hasNext()) {
 			Joueur joueur = iteratorJoueur.next();
 			if (joueur.hasHand()) {
 				joueur.increaseScore(score);
@@ -67,7 +69,7 @@ public class StrategieBunco implements IStrategie{
 					iteratorJoueur.next().setHasHand(true);
 				}
 			}
-		}		
+		}	*/
 	}
 	
 	public boolean partieTerminee(Jeu jeu) {
