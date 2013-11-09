@@ -52,7 +52,7 @@ public class Jeu {
 	}
 	
 	public void calculerScoreTour(){		
-		strategie.calculerLeScore(this);
+		strategie.calculerScoreTour(this);
 	}
 	
 	public void calculerLeVainqueur(){

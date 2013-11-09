@@ -2,8 +2,10 @@ package log121.lab3.api;
 
 public interface IStrategie {
 	
-	public CollectionJoueur calculerLeVainqueur(Jeu Jeu);
+	public void calculerLeVainqueur(Jeu jeu);
 	
-	public void calculerLeScore(Jeu Jeu);
+	public void calculerScoreTour(Jeu jeu);
+	
+	public boolean partieTerminee(Jeu jeu);
 
 }
