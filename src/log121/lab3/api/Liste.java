@@ -5,69 +5,6 @@ import java.util.NoSuchElementException;
 
 public class Liste<T> implements Ensemble<T> {
 
-	private final class ListeIterateur implements Iterator<T> {
-		private ListeNoeud<T> prev;
-		private ListeNoeud<T> current;
-		private boolean ascending;
-
-		public ListeIterateur(ListeNoeud<T> current, boolean ascending) {
-			this.prev = null;
-			this.current = current;
-			this.ascending = ascending;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return current != null;
-		}
-
-		@Override
-		public T next() {
-			if (current == null) {
-				throw new NoSuchElementException();
-			}
-
-			prev = current;
-			if (ascending)
-				current = current.next;
-			else
-				current = current.previous;
-			return prev.elem;
-		}
-
-		@Override
-		public void remove() {
-			throw new IllegalArgumentException("Not implemented");
-		}
-	}
-
-	private final class ListeNoeud<U> {
-		public U elem;
-
-		public ListeNoeud<U> next;
-
-		public ListeNoeud<U> previous;
-
-		public ListeNoeud(U value) {
-			this(value, null, null);
-		}
-
-		public ListeNoeud(U value, ListeNoeud<U> next,
-				ListeNoeud<U> previous) {
-			this.elem = value;
-			this.next = next;
-			this.previous = previous;
-		}
-
-		public boolean hasNext() {
-			return next != null;
-		}
-
-		public boolean hasPrevious() {
-			return previous != null;
-		}
-	}
-
 	/**
 	 * Nombre d'éléments dans la file
 	 */
@@ -123,13 +60,13 @@ public class Liste<T> implements Ensemble<T> {
 		else {
 			ListeNoeud<T> current = trouveNoeud(index);
 			ListeNoeud<T> nouveau = new ListeNoeud<T>(elem, current,
-					current.previous);
+					current.getPrevious());
 
 			if (current.hasPrevious())
-				current.previous.next = nouveau;
+				current.getPrevious().setNext(nouveau);
 
 			if (current.hasNext())
-				current.next.previous = nouveau;
+				current.getNext().setPrevious(nouveau);
 
 			size++;
 		}
@@ -154,7 +91,7 @@ public class Liste<T> implements Ensemble<T> {
 		} else {
 			ListeNoeud<T> temp = start;
 			start = new ListeNoeud<T>(elem, temp, null);
-			temp.previous = start;
+			temp.setPrevious(start);
 		}
 
 		size++;
@@ -179,8 +116,8 @@ public class Liste<T> implements Ensemble<T> {
 		// on ajoute le noeud é la fin
 		else {
 			ListeNoeud<T> a = end;
-			end.next = new ListeNoeud<T>(elem, null, a);
-			end = end.next;
+			end.setNext(new ListeNoeud<T>(elem, null, a));
+			end = end.getNext();
 		}
 
 		size++;
@@ -206,7 +143,7 @@ public class Liste<T> implements Ensemble<T> {
 	 */
 	@Override
 	public T trouver(int index) {
-		return trouveNoeud(index).elem;
+		return trouveNoeud(index).getElem();
 	}
 
 	/**
@@ -232,7 +169,7 @@ public class Liste<T> implements Ensemble<T> {
 	 */
 	@Override
 	public Iterator<T> iterator() {
-		return new ListeIterateur(start, true);
+		return new ListeIterateur<T>(start, true);
 	}
 
 	/**
@@ -272,10 +209,10 @@ public class Liste<T> implements Ensemble<T> {
 			return enleverFin();
 		else {
 			ListeNoeud<T> supprimer = trouveNoeud(index);
-			supprimer.previous.next = supprimer.next;
-			supprimer.next.previous = supprimer.previous;
+			supprimer.getPrevious().setNext(supprimer.getNext());
+			supprimer.getNext().setPrevious(supprimer.getPrevious());
 			size--;
-			return supprimer.elem;
+			return supprimer.getElem();
 		}
 	}
 
@@ -289,13 +226,13 @@ public class Liste<T> implements Ensemble<T> {
 
 		ListeNoeud<T> node = start;
 		if (start.hasNext()) {
-			start = start.next;
+			start = start.getNext();
 		} else {
 			start = null;
 			end = null;
 		}
 		size--;
-		return node.elem;
+		return node.getElem();
 	}
 
 	/**
@@ -308,13 +245,13 @@ public class Liste<T> implements Ensemble<T> {
 
 		ListeNoeud<T> node = end;
 		if (end.hasPrevious()) {
-			end = end.previous;
+			end = end.getPrevious();
 		} else {
 			end = null;
 			start = null;
 		}
 		size--;
-		return node.elem;
+		return node.getElem();
 	}
 
 	/**
@@ -323,7 +260,7 @@ public class Liste<T> implements Ensemble<T> {
 	 */
 	@Override
 	public Iterator<T> reverseIterator() {
-		return new ListeIterateur(end, false);
+		return new ListeIterateur<T>(end, false);
 	}
 
 	/**
@@ -343,7 +280,7 @@ public class Liste<T> implements Ensemble<T> {
 		int i = 0;
 
 		while (found.hasNext() && i++ != index) {
-			found = found.next;
+			found = found.getNext();
 		}
 
 		return found;
@@ -357,7 +294,7 @@ public class Liste<T> implements Ensemble<T> {
 	public T premier() {
 		if (start == null)
 			throw new NoSuchElementException();
-		return start.elem;
+		return start.getElem();
 	}
 	
 	/**
@@ -368,7 +305,7 @@ public class Liste<T> implements Ensemble<T> {
 	public T dernier() {
 		if (end == null)
 			throw new NoSuchElementException();
-		return end.elem;
+		return end.getElem();
 	}
 
 }
