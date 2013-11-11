@@ -17,10 +17,11 @@ public class Jeu {
 		if(strategie == null)
 			throw new NullPointerException("La strategie est null");
 		if(_nombreTours < 1)
-			throw new NullPointerException("Nombre de tours inferieur a 0");
+			throw new IllegalArgumentException("Nombre de tours inferieur a 1");
 		
 		this.nombreTours = _nombreTours;
 		this.strategie = strategie;
+		this.iteratorJoueur = listeJoueurs.creerIterateur();
 	}	
 	
 	public CollectionJoueur getListeJoueurs() {
@@ -28,6 +29,8 @@ public class Jeu {
 	}
 
 	public void setListeJoueurs(CollectionJoueur listeJoueurs) {
+		if(listeJoueurs == null)
+			throw new NullPointerException("Liste de joueurs est null");
 		this.listeJoueurs = listeJoueurs;
 	}
 
@@ -36,6 +39,8 @@ public class Jeu {
 	}
 
 	public void setListeDes(CollectionDes listeDes) {
+		if(listeDes == null)
+			throw new NullPointerException("Liste de des est null");
 		this.listeDes = listeDes;
 	}
 
@@ -51,8 +56,29 @@ public class Jeu {
 		return this.tourCourant;
 	}
 	
-	public void calculerScoreTour(){		
+	public void calculerScoreTour(){
+		for(De de : listeDes){
+			if(de != null){
+				de.roll();
+			}
+		}
 		strategie.calculerScoreTour(this);
+	}
+	
+	public void jouerTour(){		
+		while(iteratorJoueur.hasNext()){
+			calculerScoreTour();
+		}
+		
+		iteratorJoueur = listeJoueurs.creerIterateur();
+		tourCourant+=1;
+	}
+	
+	public void jouerPartie(){
+		for(int i = 0; i < this.nombreTours; i++){
+			jouerTour();
+		}
+		calculerLeVainqueur();
 	}
 	
 	public void calculerLeVainqueur(){

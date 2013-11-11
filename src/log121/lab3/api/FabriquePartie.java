@@ -11,8 +11,8 @@ public abstract class FabriquePartie{
 	}
 	
 		
-	protected abstract CollectionJoueur creerJoueurs();	
-	protected abstract CollectionDes creerDes();
-	protected abstract Jeu creerJeu();
+	public abstract CollectionJoueur creerJoueurs();	
+	public abstract CollectionDes creerDes();
+	public abstract Jeu creerJeu();
 
 }
