@@ -72,6 +72,7 @@ public class StrategieBunco implements IStrategie{
 		}	*/
 	}
 	
+	@Override
 	public boolean partieTerminee(Jeu jeu) {
 		return jeu.getNombreTours() == jeu.getTourCourant() && !jeu.getIterator().hasNext();
 	}

@@ -2,12 +2,11 @@ package log121.lab3.bunco;
 
 import log121.lab3.api.CollectionDes;
 import log121.lab3.api.CollectionJoueur;
+import log121.lab3.api.CreateurJeu;
 import log121.lab3.api.De;
-import log121.lab3.api.FabriquePartie;
-import log121.lab3.api.Jeu;
 import log121.lab3.api.Joueur;
 
-public class Bunco extends FabriquePartie{
+public class Bunco extends CreateurJeu{
 
 	@Override
 	public CollectionJoueur creerJoueurs() {
@@ -26,12 +25,5 @@ public class Bunco extends FabriquePartie{
 		listeDes.ajouter(2, new De(6));
 		return listeDes;
 	}
-
-	@Override
-	public Jeu creerJeu() {
-		return new Jeu(2, new StrategieBunco());
-	}
-
-
 
 }

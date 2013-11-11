@@ -7,6 +7,7 @@ import log121.lab3.api.De;
 import log121.lab3.api.IStrategie;
 import log121.lab3.api.Jeu;
 import log121.lab3.api.Joueur;
+import log121.lab3.bunco.Bunco;
 import log121.lab3.bunco.StrategieBunco;
 
 import org.junit.Before;
@@ -21,23 +22,29 @@ public class GameTest {
 	@Before
 	public void testInitialiserJeu(){
 		strategie = new StrategieBunco();
-		jeu = new Jeu(3, strategie);
+		jeu = new Jeu(3, strategie, new Bunco());
 	}
 	
 	@Test(expected = NullPointerException.class)
 	public void testConstructorStrategie(){		
-		new Jeu(2, strategieNull);
+		new Jeu(2, strategieNull, new Bunco());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructeurNbTours()
 	{
-		new Jeu(-1, strategie);		
+		new Jeu(-1, strategie, new Bunco());		
+	}
+	
+	@Test(expected = NullPointerException.class)
+	public void testContructeurCreateurJeuNull()
+	{
+		new Jeu(2, strategie, null);
 	}
 	
 	@Test
 	public void testCreerJeu(){
-		Jeu testJeu = new Jeu(3, strategie);
+		Jeu testJeu = new Jeu(3, strategie, new Bunco());
 		assertNotNull(testJeu);
 	}
 	
