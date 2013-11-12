@@ -1,8 +1,6 @@
 package log121.lab3.api;
 
-import java.util.Iterator;
-
-public class CollectionJoueur extends Liste<Joueur> {
+public class CollectionJoueurs extends Liste<Joueur> {
 
 
 	/**
@@ -19,8 +17,8 @@ public class CollectionJoueur extends Liste<Joueur> {
 	 * Retourne un itérateur pour la liste
 	 * @return
 	 */
-	public Iterator<Joueur> creerIterateur(){
-		return this.iterator();
+	public ListeIterateur<Joueur> creerIterateur(){
+		return (ListeIterateur<Joueur>)this.iterator();
 	}
 	
 	

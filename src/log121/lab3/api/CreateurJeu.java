@@ -1,18 +1,35 @@
 package log121.lab3.api;
 
+import java.util.NoSuchElementException;
+
 public abstract class CreateurJeu{
 		
 	public final void creerJeu(Jeu jeu)
 	{
-		jeu.setListeJoueurs(creerJoueurs());
-		jeu.setListeDes(creerDes());
+		
+		CollectionJoueurs joueurs = creerJoueurs();
+		if(joueurs == null)
+			throw new NullPointerException();
+		
+		if(joueurs.taille() == 0)
+			throw new NoSuchElementException();
+		
+		CollectionDes des = creerDes();
+		if(des == null)
+			throw new NullPointerException();
+		
+		if(des.taille() == 0)
+			throw new NoSuchElementException();
+		
+		jeu.setListeJoueurs(joueurs);
+		jeu.setListeDes(des);
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public abstract CollectionJoueur creerJoueurs();
+	public abstract CollectionJoueurs creerJoueurs();
 	
 	/**
 	 * 

@@ -50,6 +50,13 @@ public class ListeIterateur<T> implements Iterator<T> {
 
 		return current.getElem();
 	}
+	
+	public T getPrevious(){
+		if(prev == null)
+			throw new NoSuchElementException();
+		
+		return prev.getElem();
+	}
 
 	/**
 	 * Supprime l'élément de l'itérateur (not implemented)

@@ -1,16 +1,14 @@
 package log121.lab3.api;
 
-import java.util.Iterator;
-
 public class Jeu {
 	
-	private final int DEBUT_TOUR_COURANT = 0;
+	private final int DEBUT_TOUR_COURANT = 1;
 	
-	private CollectionJoueur listeJoueurs = new CollectionJoueur();
+	private CollectionJoueurs listeJoueurs = new CollectionJoueurs();
 	private CollectionDes listeDes = new CollectionDes();
 	private int nombreTours;
 	private int tourCourant = DEBUT_TOUR_COURANT;
-	private Iterator<Joueur> iteratorJoueur;
+	private ListeIterateur<Joueur> iteratorJoueur;
 	private IStrategie strategie;
 	
 	/**
@@ -28,9 +26,9 @@ public class Jeu {
 		
 		this.nombreTours = _nombreTours;
 		this.strategie = strategie;
-		this.iteratorJoueur = listeJoueurs.creerIterateur();
-		
 		builder.creerJeu(this);
+		
+		iteratorJoueur = listeJoueurs.creerIterateur();
 	}	
 	
 	
@@ -38,7 +36,7 @@ public class Jeu {
 	 * Retourne la liste des joueurs
 	 * @return
 	 */
-	public CollectionJoueur getListeJoueurs() {
+	public CollectionJoueurs getListeJoueurs() {
 		return listeJoueurs;
 	}
 
@@ -46,7 +44,7 @@ public class Jeu {
 	 * Assigne la liste des joueurs
 	 * @param listeJoueurs
 	 */
-	public void setListeJoueurs(CollectionJoueur listeJoueurs) {
+	public void setListeJoueurs(CollectionJoueurs listeJoueurs) {
 		if(listeJoueurs == null)
 			throw new NullPointerException("Liste de joueurs est null");
 		this.listeJoueurs = listeJoueurs;
@@ -74,7 +72,7 @@ public class Jeu {
 	 * Retourne l'itérateur des joueurs
 	 * @return
 	 */
-	public Iterator<Joueur> getIterator(){
+	public ListeIterateur<Joueur> getIterator(){
 		return this.iteratorJoueur;
 	}
 	
@@ -95,6 +93,14 @@ public class Jeu {
 	}
 	
 	/**
+	 * Assigne le tour courant
+	 * @param tourCourant
+	 */
+	public void setTourCourant(int tourCourant){
+		this.tourCourant = tourCourant;
+	}
+	
+	/**
 	 * Calcul le score pour une partie
 	 */
 	public void calculerScoreTour(){
@@ -110,7 +116,6 @@ public class Jeu {
 		}
 		
 		iteratorJoueur = listeJoueurs.creerIterateur();
-		tourCourant+=1;
 	}
 	
 	/**

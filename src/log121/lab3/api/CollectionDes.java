@@ -1,7 +1,5 @@
 package log121.lab3.api;
 
-import java.util.Iterator;
-
 public class CollectionDes extends Liste<De> {
 	
 	/**
@@ -17,8 +15,8 @@ public class CollectionDes extends Liste<De> {
 	 * Retourne un itérateur pour la liste
 	 * @return
 	 */
-	public Iterator<De> creerIterateur(){
-		return this.iterator();
+	public ListeIterateur<De> creerIterateur(){
+		return (ListeIterateur<De>)this.iterator();
 	}
 	
 }
