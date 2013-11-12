@@ -93,6 +93,14 @@ public class Jeu {
 	}
 	
 	/**
+	 * Assigne l'itérateur des joueurs
+	 * @param iterateurJoueur
+	 */
+	public void setIterateurJoueur(ListeIterateur<Joueur> iterateurJoueur) {
+		this.iteratorJoueur = iterateurJoueur;
+	}
+	
+	/**
 	 * Assigne le tour courant
 	 * @param tourCourant
 	 */
@@ -111,11 +119,12 @@ public class Jeu {
 	 * Joue le tour actuel
 	 */
 	public void jouerTour(){		
-		while(iteratorJoueur.hasNext()){
+		int courant = tourCourant;
+		while(courant == tourCourant){
+			for(De de : listeDes)
+				de.roll();
 			calculerScoreTour();
 		}
-		
-		iteratorJoueur = listeJoueurs.creerIterateur();
 	}
 	
 	/**

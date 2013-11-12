@@ -31,7 +31,7 @@ public class Liste<T> implements Ensemble<T> {
 	/**
 	 * Construit une liste d'éléments à partir d'une autre liste
 	 */
-	public Liste(Liste<T> other) {
+	public Liste(Ensemble<T> other) {
 		this();
 		for (T elem : other)
 			ajouterFin(elem);

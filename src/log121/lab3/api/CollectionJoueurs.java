@@ -2,6 +2,15 @@ package log121.lab3.api;
 
 public class CollectionJoueurs extends Liste<Joueur> {
 
+	public CollectionJoueurs()
+	{
+		super();
+	}
+
+	public CollectionJoueurs(Ensemble<Joueur> x) {
+		super(x);
+	}
+
 
 	/**
 	 * Ajoute un nouveau joueur à la liste

@@ -17,13 +17,17 @@ public class StrategieBunco implements IStrategie {
 
 	@Override
 	public void calculerLeVainqueur(Jeu jeu) {
-		jeu.setListeJoueurs((CollectionJoueurs) Ensembles.quicksort(jeu
-				.getListeJoueurs()));
+		CollectionJoueurs joueurs = new CollectionJoueurs(Ensembles.quicksort(jeu.getListeJoueurs()));
+		jeu.setListeJoueurs(joueurs);
 	}
 
 	@Override
 	public void calculerScoreTour(Jeu jeu) {
 		int tourCourant = jeu.getTourCourant();
+		
+		if(tourCourant > 6)
+			return;
+		
 		ListeIterateur<Joueur> iter = jeu.getIterator();
 		CollectionDes collectionDes = jeu.getListeDes();
 
@@ -40,29 +44,27 @@ public class StrategieBunco implements IStrategie {
 				nbrDesIdentiques++;
 		}
 
-		System.out.println("ID TOUR : " + nbrDesIdentiquesAuTour);
-		System.out.println("ID : " + nbrDesIdentiques);
-
 		if (nbrDesIdentiquesAuTour == collectionDes.taille()) {
 			score = SCOREBUNCO;
 			changerTour = true;
-			System.out.println("BUNCO");
 		} else if (nbrDesIdentiques == collectionDes.taille()) {
 			score = SCORETROISDESIDENTIQUES;
-			System.out.println("3 IDENTIQUES");
 		} else if (nbrDesIdentiquesAuTour < collectionDes.taille()
 				&& nbrDesIdentiquesAuTour > 0) {
 			score = nbrDesIdentiquesAuTour * SCOREDESIDENTIQUES;
-			System.out.println("<3 IDENTIQUES");
 		} else {
 			changerTour = true;
-			System.out.println("FUCKALL");
 		}
 
 		iter.getCurrent().increaseScore(score);
 
 		if (changerTour && iter.hasNext()) {
 			iter.next();
+		}
+		
+		if(!iter.hasNext()){
+			jeu.setTourCourant(++tourCourant);
+			jeu.setIterateurJoueur(jeu.getListeJoueurs().creerIterateur());
 		}
 
 	}
